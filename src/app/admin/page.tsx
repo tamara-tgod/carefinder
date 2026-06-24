@@ -1,11 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminHeader from "@/components/admin/AdminHeader";
 import { getStats } from "@/services/hospitalService";
 import Statscard from "@/components/admin/StatsCard";
-import HospitalTable from "@/components/admin/HospitalTable";
 import Container from "@/components/Container";
+import HospitalTable from "@/components/admin/HospitalTable";
 
 export default async function AdminPage() {
   const supabase = await createClient();
@@ -20,11 +19,9 @@ export default async function AdminPage() {
   const Stats = await getStats();
 
   return (
-    <div className="bg-surface flex ">
-      <aside>
-        <AdminSidebar />
-      </aside>
-      <main className="w-full">
+    <div>
+      {" "}
+      <main className="w-full bg-surface">
         <AdminHeader />
         <section className="my-5">
           <Container>
@@ -44,17 +41,17 @@ export default async function AdminPage() {
                 iconBg="bg-blue-200"
               />
               <Statscard
-                label="Total Public Hospitals"
+                label="Public Hospitals"
                 value={Stats.totalPublicHospitals ?? 0}
                 icon="account_balance"
-                subtext="approved enteries"
+                subtext="total public hospitals"
                 iconBg="bg-purple-200"
               />
               <Statscard
-                label="Total Private Hospitals"
+                label="Private Hospitals"
                 value={Stats.totalPrivateHospitals ?? 0}
                 icon="business_center"
-                subtext="approved enteries"
+                subtext="total private hospitals"
                 iconBg="bg-pink-200"
               />
             </div>
@@ -63,9 +60,7 @@ export default async function AdminPage() {
 
         {/* hospital table */}
         <section>
-          <Container>
-            <HospitalTable />
-          </Container>
+         <HospitalTable />
         </section>
       </main>
     </div>

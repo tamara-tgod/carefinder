@@ -1,7 +1,7 @@
 import Link from "next/link";
-import SignOutBtn from "./SignOutBtn";
 import { createClient } from "@/lib/supabase/server";
 import Image from "next/image";
+import SidebarNav from "./SidebarNav";
 
 export default async function AdminSidebar() {
   const supabase = await createClient();
@@ -9,7 +9,7 @@ export default async function AdminSidebar() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const navLinks = [
+   const navLinks = [
     {
       label: "Overview",
       href: "/admin",
@@ -32,6 +32,7 @@ export default async function AdminSidebar() {
     },
   ];
 
+
   return (
     <div className="bg-outline-variant/20 flex flex-col justify-between w-64 h-screen p-2">
       <div className="flex flex-col gap-6">
@@ -41,21 +42,9 @@ export default async function AdminSidebar() {
           </Link>
           <p className="text-on-surface-variant text-sm">Admin Panel</p>
         </div>
-        <div className="flex flex-col gap-1.5">
-          {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className={`flex items-center gap-2 text-sm hover:bg-primary rounded-md hover:text-on-primary px-1 py-3 transition-colors cursor-pointer`}
-            >
-              <span className="material-symbols-outlined">{link.icon}</span>
-              {link.label}
-            </Link>
-          ))}
 
-          {/*log out btn*/}
-          <SignOutBtn />
-        </div>
+         <SidebarNav links={navLinks}/>
+ 
       </div>
       <div className="flex items-center gap-1.5">
         <Image
@@ -65,6 +54,7 @@ export default async function AdminSidebar() {
           alt="avatar"
           className="rounded-full"
         />
+       
 
         <div className="">
           <h3>Admin User</h3>

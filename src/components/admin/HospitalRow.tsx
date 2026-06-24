@@ -32,5 +32,7 @@ export default function HospitalRow({ hospital }: HospitalRowProps) {
         <button className="text-gray-500 hover:text-black">:::</button>
       </td>
     </tr>
+
+    
   );
 }

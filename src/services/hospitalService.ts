@@ -1,12 +1,15 @@
 import { createClient } from "../lib/supabase/server"
 import  {Hospital} from "@/types/hospital"
 
-export default async function getHospitals(): Promise<Hospital[]>{
+export default async function getHospitals(page = 1, pageSize = 10): Promise<Hospital[]>{
     const supabase = await createClient()
+    const from = (page - 1) * pageSize
+    const to = from + pageSize - 1
 
     const {data, error} = await supabase 
     .from("hospitals") 
-    .select("*"); 
+    .select("*")
+    .range(from, to)
 
     if (error) {
         throw error;
@@ -35,6 +38,7 @@ export async function getHospitalById(id: string): Promise<Hospital> {
 export async function getStats() {
     const supabase = await createClient()
 
+    // total hospitals
      const {count: hospitalCount, error: hospitalError} = await supabase
     .from("hospitals")
     .select("*", {count: "exact", head: true})
@@ -44,6 +48,7 @@ export async function getStats() {
         throw hospitalError
     }
 
+    // total reviews
     const {count: reviewCount, error: reviewError} = await supabase
     .from("reviews")
     .select("*", {count: "exact", head: true})
@@ -52,7 +57,19 @@ export async function getStats() {
         console.log("Supabase error:", reviewError)
         throw reviewError
     }
+
+    // pending reviews
+    const {count: pendingReviewCount, error: pendingReviewError} = await supabase
+    .from("reviews")
+    .select("*", {count: "exact", head:true})
+    .eq("status", "pending")
+     
+    if (pendingReviewError) {
+        console.log("Supabase error:", pendingReviewError)
+        throw pendingReviewError
+    }
     
+    // total public hospitals
     const {count: publicHospitalCount, error: publicHospitalError} = await supabase
     .from("hospitals")
     .select("*", {count: "exact", head: true})
@@ -63,6 +80,7 @@ export async function getStats() {
         throw publicHospitalError
     }
 
+    // total private hospitals
     const {count: privateHospitalCount, error: privateHospitalError} = await supabase
     .from("hospitals")
     .select("*", {count: "exact", head: true})
@@ -78,6 +96,7 @@ export async function getStats() {
        totalReviews: reviewCount,
        totalPublicHospitals: publicHospitalCount,
        totalPrivateHospitals: privateHospitalCount,
+       pendingReviews: pendingReviewCount
 
     }
 }
